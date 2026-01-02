@@ -1,6 +1,7 @@
 export const navigation = {
   main: [
     { name: "Home", href: "/" },
-    { name: "Tools", href: "/tools" },
+    { name: "Calculator", href: "/calculator" },
+    { name: "Mileage-Calcultor", href: "/mileage-calculator" },
   ],
 };
