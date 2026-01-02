@@ -4,17 +4,18 @@ import { useMileageCalculator } from "@/hooks/useMileageCalculator";
 
 /* ---------------- TYPES ---------------- */
 
-type Unit = "km" | "miles" | "ltr" | "gal";
+type DistanceUnit = "km" | "miles";
+type FuelUnit = "ltr" | "gal";
 
-interface InputBlockProps {
+interface InputBlockProps<TUnit extends string> {
   label: string;
   value: number;
   placeholder: string;
   unit1: string;
   unit2: string;
-  activeUnit: Unit;
+  activeUnit: TUnit;
   onChange: (value: number) => void;
-  onUnitChange: (unit: Unit) => void;
+  onUnitChange: (unit: TUnit) => void;
 }
 
 interface OutputCardProps {
@@ -40,25 +41,27 @@ export default function MileageCalculator() {
           </div>
 
           <div className="p-5 space-y-6">
-            <InputBlock
+            {/* Distance */}
+            <InputBlock<DistanceUnit>
               label="Distance"
               value={m.distance}
-              onChange={(v: number) => m.setDistance(v)}
+              onChange={(v) => m.setDistance(v)}
               unit1="Km"
               unit2="Miles"
               activeUnit={m.distanceUnit}
-              onUnitChange={(u: Unit) => m.setDistanceUnit(u)}
+              onUnitChange={(u) => m.setDistanceUnit(u)}
               placeholder="Enter Distance"
             />
 
-            <InputBlock
+            {/* Fuel */}
+            <InputBlock<FuelUnit>
               label="Fuel"
               value={m.fuel}
-              onChange={(v: number) => m.setFuel(v)}
+              onChange={(v) => m.setFuel(v)}
               unit1="Ltr"
               unit2="Gal"
               activeUnit={m.fuelUnit}
-              onUnitChange={(u: Unit) => m.setFuelUnit(u)}
+              onUnitChange={(u) => m.setFuelUnit(u)}
               placeholder="Enter Fuel"
             />
 
@@ -127,7 +130,7 @@ export default function MileageCalculator() {
 
 /* ---------------- COMPONENTS ---------------- */
 
-function InputBlock({
+function InputBlock<TUnit extends string>({
   label,
   value,
   onChange,
@@ -136,7 +139,7 @@ function InputBlock({
   activeUnit,
   onUnitChange,
   placeholder,
-}: InputBlockProps) {
+}: InputBlockProps<TUnit>) {
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-neutral-700 dark:text-white">
@@ -154,20 +157,23 @@ function InputBlock({
         />
         <div className="flex items-center rounded-full border
         dark:border-[#2E2E2E] px-1 h-10">
-          {[unit1, unit2].map((u) => (
-            <button
-              key={u}
-              onClick={() => onUnitChange(u.toLowerCase() as Unit)}
-              className={`px-3 h-8 rounded-full text-sm font-medium transition
-              ${
-                activeUnit === u.toLowerCase()
-                  ? "bg-[#E11D48] text-black"
-                  : "text-neutral-600"
-              }`}
-            >
-              {u}
-            </button>
-          ))}
+          {[unit1, unit2].map((u) => {
+            const unit = u.toLowerCase() as TUnit;
+            return (
+              <button
+                key={u}
+                onClick={() => onUnitChange(unit)}
+                className={`px-3 h-8 rounded-full text-sm font-medium transition
+                ${
+                  activeUnit === unit
+                    ? "bg-[#E11D48] text-black"
+                    : "text-neutral-600"
+                }`}
+              >
+                {u}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>
